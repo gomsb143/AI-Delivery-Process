@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Program Management Manual · CPMAI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #1e2530;
+    --accent: #00e5c3;
+    --accent2: #ff6b4a;
+    --accent3: #7b61ff;
+    --gold: #f4c842;
+    --text: #e8eaf0;
+    --text-muted: #6b7385;
+    --text-dim: #9ca3b0;
+    --danger: #ff4a6b;
+    --warn: #ffb84a;
+    --success: #4affb8;
+    --phase1: #00e5c3;
+    --phase2: #7b61ff;
+    --phase3: #ff6b4a;
+    --phase4: #ff4a6b;
+    --phase5: #f4c842;
+    --phase6: #4a9fff;
+    --phase7: #4affb8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Lora', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND GRID ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,195,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,195,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,12,16,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .logo span { color: var(--text-muted); font-weight: 400; }
+
+  .header-nav {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    align-items: center;
+  }
+
+  .header-nav a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+
+  .header-nav a:hover { color: var(--accent); }
+
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    background: rgba(0,229,195,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,195,0.25);
+    padding: 0.25rem 0.6rem;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 2rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .app-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: calc(100vh - 64px);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    padding: 2rem 0;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .sidebar-section {
+    padding: 0 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .sidebar-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase-nav {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .phase-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+  }
+
+  .phase-nav-item:hover {
+    background: var(--surface);
+    border-color: var(--border);
+  }
+
+  .phase-nav-item.active {
+    background: var(--surface2);
+    border-color: var(--border);
+  }
+
+  .phase-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .phase-nav-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+  }
+
+  .phase-nav-item.active .phase-nav-label { color: var(--text); }
+
+  .phase-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    margin-left: auto;
+  }
+
+  /* Quick nav links */
+  .quick-links { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .quick-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding: 0.4rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .quick-link:hover { color: var(--accent); }
+
+  /* ── CONTENT AREA ── */
+  .content {
+    padding: 2rem 3rem;
+    overflow-y: auto;
+  }
+
+  /* ── SECTION TABS ── */
+  .section-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+    overflow-x: auto;
+  }
+
+  .tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── PHASE CARD ── */
+  .phase-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+
+  .phase-card:hover {
+    border-color: rgba(255,255,255,0.1);
+    transform: translateY(-1px);
+  }
+
+  .phase-card.expanded { border-color: rgba(0,229,195,0.2); }
+
+  .phase-card-header {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .phase-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .phase-card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  .phase-card-owner {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .expand-icon {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .phase-card.expanded .expand-icon { transform: rotate(180deg); }
+
+  .phase-card-body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 1.5rem;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .phase-card.expanded .phase-card-body { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* I/O Grid */
+  .io-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .io-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+  }
+
+  .io-box-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .io-input { color: var(--accent3); }
+  .io-output { color: var(--accent); }
+
+  .io-items { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  .io-item {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.73rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .io-item::before {
+    content: '→';
+    color: var(--text-muted);
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    margin-top: 2px;
+  }
+
+  /* Activities */
+  .activities-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .activities-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .activity-bullet {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  /* Risk + Mitigation */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 900px) {
+    .risk-grid { grid-template-columns: 1fr; }
+    .io-grid { grid-template-columns: 1fr; }
+    .app-layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; height: auto; }
+  }
+
+  .risk-card {
+    border-radius: 6px;
+    padding: 1rem;
+    border: 1px solid;
+  }
+
+  .risk-card.risk {
+    background: rgba(255,74,107,0.05);
+    border-color: rgba(255,74,107,0.2);
+  }
+
+  .risk-card.mitigation {
+    background: rgba(74,255,184,0.05);
+    border-color: rgba(74,255,184,0.2);
+  }
+
+  .risk-card.workaround {
+    background: rgba(244,200,66,0.05);
+    border-color: rgba(244,200,66,0.2);
+  }
+
+  .risk-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.6rem;
+  }
+
+  .risk-card.risk .risk-card-label { color: var(--danger); }
+  .risk-card.mitigation .risk-card-label { color: var(--success); }
+  .risk-card.workaround .risk-card-label { color: var(--warn); }
+
+  .risk-card-text {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* Scenarios */
+  .scenarios-section { margin-top: 1.5rem; }
+
+  .scenario-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .scenario-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .scenario-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--bg);
+    color: var(--text-muted);
+  }
+
+  .scenario-tab:hover { border-color: var(--accent3); color: var(--accent3); }
+  .scenario-tab.active { background: rgba(123,97,255,0.15); border-color: var(--accent3); color: var(--accent3); }
+
+  .scenario-content {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.25rem;
+    display: none;
+  }
+
+  .scenario-content.active { display: block; animation: fadeIn 0.2s ease; }
+
+  .scenario-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .scenario-content p {
+    font-size: 0.83rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+
+  .scenario-steps {
+    list-style: none;
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .scenario-step {
+    counter-increment: step;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .scenario-step::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent3);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── RACI TABLE ── */
+  .raci-section { padding: 0; }
+
+  .raci-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.73rem;
+  }
+
+  .raci-table th {
+    background: var(--surface2);
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+
+  .raci-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    color: var(--text-dim);
+    vertical-align: middle;
+  }
+
+  .raci-table tr:hover td { background: var(--surface); }
+
+  .raci-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+
+  .raci-R { background: rgba(0,229,195,0.1); color: var(--accent); border: 1px solid rgba(0,229,195,0.2); }
+  .raci-A { background: rgba(255,107,74,0.1); color: var(--accent2); border: 1px solid rgba(255,107,74,0.2); }
+  .raci-C { background: rgba(123,97,255,0.1); color: var(--accent3); border: 1px solid rgba(123,97,255,0.2); }
+  .raci-I { background: rgba(107,115,133,0.1); color: var(--text-muted); border: 1px solid var(--border); }
+
+  .phase-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.7rem;
+    color: var(--text);
+  }
+
+  .phase-chip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── LIFECYCLE FLOW ── */
+  .flow-section {}
+
+  .flow-track {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .flow-track::before {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--accent3), var(--accent2));
+    opacity: 0.4;
+  }
+
+  .flow-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1rem 0;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .flow-node:hover .flow-content { background: var(--surface2); }
+
+  .flow-marker {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    background: var(--bg);
+    position: relative;
+    z-index: 1;
+    transition: all 0.2s;
+  }
+
+  .flow-node:hover .flow-marker { transform: scale(1.1); }
+
+  .flow-content {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    transition: all 0.2s;
+    margin-bottom: 0.5rem;
+  }
+
+  .flow-content-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .flow-content-desc {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  .flow-tags {
+    display: flex;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .flow-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    background: var(--surface2);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  /* ── RISK REGISTER ── */
+  .risk-register {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .risk-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 80px 1fr;
+    gap: 1rem;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    font-size: 0.83rem;
+  }
+
+  .risk-phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .risk-level {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-align: center;
+  }
+
+  .risk-high { background: rgba(255,74,107,0.15); color: var(--danger); border: 1px solid rgba(255,74,107,0.3); }
+  .risk-medium { background: rgba(255,184,74,0.15); color: var(--warn); border: 1px solid rgba(255,184,74,0.3); }
+  .risk-low { background: rgba(74,255,184,0.15); color: var(--success); border: 1px solid rgba(74,255,184,0.3); }
+
+  .risk-desc { color: var(--text-dim); line-height: 1.5; }
+  .risk-mit { color: var(--text-dim); font-size: 0.8rem; line-height: 1.5; font-style: italic; }
+
+  /* ── SECTION TITLES ── */
+  .section-heading {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .section-sub {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: rgba(0,229,195,0.06);
+    border: 1px solid rgba(0,229,195,0.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .callout strong { color: var(--accent); font-family: 'DM Mono', monospace; font-size: 0.78rem; }
+
+  /* ── DELIVERABLES CHECKLIST ── */
+  .checklist { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.5rem; }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .check-item:hover { background: var(--surface2); }
+
+  .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .check-item.checked .check-box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .check-item.checked .check-box::after {
+    content: '✓';
+    font-size: 0.65rem;
+    color: var(--bg);
+    font-weight: bold;
+  }
+
+  .check-item.checked span { text-decoration: line-through; color: var(--text-muted); }
+
+  /* ── FOOTER AREA ── */
+  .content-section { display: none; }
+  .content-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .progress-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 2px;
+    width: 0;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .progress-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--accent);
+    min-width: 42px;
+    text-align: right;
+  }
+
+  /* ── MOBILE TOGGLE ── */
+  .mobile-sidebar-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-sidebar-toggle { display: block; }
+    .sidebar { display: none; }
+    .sidebar.open { display: block; position: fixed; top: 64px; left: 0; right: 0; z-index: 50; background: var(--bg); height: auto; max-height: 60vh; }
+    .content { padding: 1.5rem; }
+  }
+
+  /* scroll bar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">CPMAI <span>/ AI Program Manual</span></div>
+  <nav>
+    <ul class="header-nav">
+      <li><a onclick="showSection('phases')">Phases</a></li>
+      <li><a onclick="showSection('lifecycle')">Lifecycle</a></li>
+      <li><a onclick="showSection('raci')">RACI</a></li>
+      <li><a onclick="showSection('risks')">Risk Register</a></li>
+      <li><span class="badge">v2.1</span></li>
+    </ul>
+  </nav>
+</header>
+
+<div style="max-width:1400px;margin:0 auto;position:relative;z-index:1;">
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-eyebrow">CPMAI-Based Framework · Program Managers Guide</p>
+    <h1>AI Program<br><em>Management</em><br>Manual</h1>
+    <p class="hero-sub">A structured, repeatable process for managing AI projects end-to-end — from initiation to monitoring — with built-in risk intelligence and cross-team coordination.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">7</span><span class="stat-label">Program Phases</span></div>
+      <div class="stat"><span class="stat-num">24</span><span class="stat-label">Risk Scenarios</span></div>
+      <div class="stat"><span class="stat-num">5</span><span class="stat-label">Role Types</span></div>
+      <div class="stat"><span class="stat-num">∞</span><span class="stat-label">Iteration Loops</span></div>
+    </div>
+  </div>
+
+  <!-- APP LAYOUT -->
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-section">
+        <p class="sidebar-title">Program Phases</p>
+        <ul class="phase-nav">
+          <li class="phase-nav-item active" onclick="showSection('phases'); setActiveNav(this)">
+            <span class="phase-dot" style="background:#00e5c3"></span>
+            <span class="phase-nav-label">All Phases Overview</span>
+            <span class="phase-num">→</span>
+          </li>
+          <li class="phase-nav-item" onclick="showSection('lifecycle'); setActiveNav(this)">
+            <span class="phase-dot" style="background:#7b61ff"></span>
+            <span class="phase-nav-label">Lifecycle Flow</span>
+            <span class="phase-num">→</span>
+          </li>
+          <li class="phase-nav-item" onclick="showSection('raci'); setActiveNav(this)">
+            <span class="phase-dot" style="background:#ff6b4a"></span>
+            <span class="phase-nav-label">RACI Governance</span>
+            <span class="phase-num">→</span>
+          </li>
+          <li class="phase-nav-item" onclick="showSection('risks'); setActiveNav(this)">
+            <span class="phase-dot" style="background:#ff4a6b"></span>
+            <span class="phase-nav-label">Risk Register</span>
+            <span class="phase-num">→</span>
+          </li>
+          <li class="phase-nav-item" onclick="showSection('checklist'); setActiveNav(this)">
+            <span class="phase-dot" style="background:#f4c842"></span>
+            <span class="phase-nav-label">PM Checklist</span>
+            <span class="phase-num">→</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-title">Jump to Phase</p>
+        <ul class="quick-links">
+          <li class="quick-link" onclick="showSection('phases'); setTimeout(()=>expandCard('p1'),100)">① Initiation</li>
+          <li class="quick-link" onclick="showSection('phases'); setTimeout(()=>expandCard('p2'),100)">② Requirements</li>
+          <li class="quick-link" onclick="showSection('phases'); setTimeout(()=>expandCard('p3'),100)">③ Architecture</li>
+          <li class="quick-link" onclick="showSection('phases'); setTimeout(()=>expandCard('p4'),100)">④ Risk & Governance</li>
+          <li class="quick-link" onclick="showSection('phases'); setTimeout(()=>expandCard('p5'),100)">⑤ Model Development</li>
+          <li class="quick-link" onclick="showSection('phases'); setTimeout(()=>expandCard('p6'),100)">⑥ Deployment / MLOps</li>
+          <li class="quick-link" onclick="showSection('phases'); setTimeout(()=>expandCard('p7'),100)">⑦ Monitoring</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-title">Tool Compatibility</p>
+        <ul class="quick-links">
+          <li class="quick-link" style="color:var(--text-dim)">✓ Jira</li>
+          <li class="quick-link" style="color:var(--text-dim)">✓ MS Project</li>
+          <li class="quick-link" style="color:var(--text-dim)">✓ Asana</li>
+          <li class="quick-link" style="color:var(--text-dim)">✓ Custom Apps</li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="content">
+
+      <!-- ── PHASES SECTION ── -->
+      <section class="content-section active" id="section-phases">
+        <h2 class="section-heading">Program Phases</h2>
+        <p class="section-sub">Seven CPMAI-aligned phases. Click any card to expand details, scenarios, deliverables, and mitigation strategies.</p>
+
+        <div class="callout">
+          <strong>💡 PM TIP</strong> &nbsp;Phases are not strictly sequential. Model development (Phase 5) uses iterative loops. Define soft start dates and use dependency flags so your PM tool surfaces blockers early.
+        </div>
+
+        <div class="phase-grid">
+
+          <!-- PHASE 1 -->
+          <div class="phase-card" id="p1" onclick="toggleCard('p1')">
+            <div class="phase-card-header">
+              <div class="phase-icon" style="background:rgba(0,229,195,0.12);color:var(--phase1);">01</div>
+              <div>
+                <div class="phase-card-title">Program & Project Initiation</div>
+                <div class="phase-card-owner">Owner: Program Manager · Director</div>
+              </div>
+              <span class="expand-icon">▼</span>
+            </div>
+            <div class="phase-card-body">
+              <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.25rem;">Align AI projects with business priorities. Establish the charter, secure sponsorship, assign cross-functional teams, and build a high-level roadmap before any technical work begins.</p>
+
+              <div class="io-grid">
+                <div class="io-box">
+                  <p class="io-box-title io-input">⬇ Inputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Business goals &amp; strategic priorities</li>
+                    <li class="io-item">Portfolio requests / backlog</li>
+                    <li class="io-item">Available budget &amp; headcount</li>
+                  </ul>
+                </div>
+                <div class="io-box">
+                  <p class="io-box-title io-output">⬆ Outputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Project charter document</li>
+                    <li class="io-item">High-level roadmap &amp; milestones</li>
+                    <li class="io-item">Resource &amp; team allocation plan</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p class="activities-title">Key Activities</p>
+              <ul class="activities-list">
+                <li class="activity-item"><span class="activity-bullet"></span>Portfolio review with executive stakeholders</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Define project objectives, scope, and success criteria</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Assign cross-functional team leads: Data Science, DevOps, Compliance</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Weekly executive checkpoints scheduled</li>
+              </ul>
+
+              <div class="risk-grid">
+                <div class="risk-card risk">
+                  <p class="risk-card-label">⚠ Risk</p>
+                  <p class="risk-card-text">Misaligned priorities between business units. AI project scoped incorrectly vs. strategic goals.</p>
+                </div>
+                <div class="risk-card mitigation">
+                  <p class="risk-card-label">✓ Mitigation</p>
+                  <p class="risk-card-text">Executive alignment workshops. Prioritize high-value projects using a weighted scoring matrix.</p>
+                </div>
+                <div class="risk-card workaround">
+                  <p class="risk-card-label">⚡ Workaround</p>
+                  <p class="risk-card-text">If alignment stalls, set flexible milestone buffers and re-run priority scoring with updated business input.</p>
+                </div>
+              </div>
+
+              <div class="scenarios-section">
+                <p class="scenario-title">▸ Real-World Scenarios</p>
+                <div class="scenario-tabs">
+                  <div class="scenario-tab active" onclick="showScenario('p1','s1',this)">Budget Conflict</div>
+                  <div class="scenario-tab" onclick="showScenario('p1','s2',this)">Late Sponsorship</div>
+                  <div class="scenario-tab" onclick="showScenario('p1','s3',this)">Scope Creep Risk</div>
+                </div>
+                <div class="scenario-content active" id="p1-s1">
+                  <h4>Scenario: Multiple teams competing for the same AI budget</h4>
+                  <p>Two business units submit AI project requests exceeding the total portfolio budget by 40%. The PM must facilitate prioritization.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Run a weighted scoring workshop: ROI potential (40%), strategic fit (30%), feasibility (30%)</li>
+                    <li class="scenario-step">Present ranked projects to the Program Director with clear tradeoff analysis</li>
+                    <li class="scenario-step">Phase lower-ranked projects into a future sprint or propose a shared resource model</li>
+                    <li class="scenario-step">Document decisions in the charter and circulate to all stakeholders</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p1-s2">
+                  <h4>Scenario: Executive sponsor unavailable at kickoff</h4>
+                  <p>The designated executive sponsor is on leave. The project charter cannot be signed off, blocking team allocation.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Identify a temporary delegated authority within 48 hours</li>
+                    <li class="scenario-step">Issue a provisional charter with a 2-week review window</li>
+                    <li class="scenario-step">Begin low-risk activities: team onboarding, requirements prep</li>
+                    <li class="scenario-step">Formally ratify charter upon sponsor's return</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p1-s3">
+                  <h4>Scenario: Stakeholders adding features mid-charter</h4>
+                  <p>After charter sign-off, three new AI use-cases are submitted by business teams requesting inclusion.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Log incoming requests in a formal change request register</li>
+                    <li class="scenario-step">Assess impact on timeline, cost, and resource allocation</li>
+                    <li class="scenario-step">Present to Program Director: accept into current scope or backlog</li>
+                    <li class="scenario-step">Update charter only if approved; communicate changes to all teams</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PHASE 2 -->
+          <div class="phase-card" id="p2" onclick="toggleCard('p2')">
+            <div class="phase-card-header">
+              <div class="phase-icon" style="background:rgba(123,97,255,0.12);color:var(--phase2);">02</div>
+              <div>
+                <div class="phase-card-title">Business Requirements & Functional Analysis</div>
+                <div class="phase-card-owner">Owner: Functional Consultants · PM</div>
+              </div>
+              <span class="expand-icon">▼</span>
+            </div>
+            <div class="phase-card-body">
+              <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.25rem;">Define precisely what the AI solution must achieve. Capture KPIs, edge cases, integration requirements, and data availability constraints before handing to architects.</p>
+
+              <div class="io-grid">
+                <div class="io-box">
+                  <p class="io-box-title io-input">⬇ Inputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Business goals from charter</li>
+                    <li class="io-item">Stakeholder interviews &amp; surveys</li>
+                    <li class="io-item">Current process flow documentation</li>
+                    <li class="io-item">Data availability assessment</li>
+                  </ul>
+                </div>
+                <div class="io-box">
+                  <p class="io-box-title io-output">⬆ Outputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Functional requirements document</li>
+                    <li class="io-item">KPIs and measurable success metrics</li>
+                    <li class="io-item">MVP feature set definition</li>
+                    <li class="io-item">Prototype or mock dataset</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p class="activities-title">Key Activities</p>
+              <ul class="activities-list">
+                <li class="activity-item"><span class="activity-bullet"></span>Stakeholder workshops: capture pain points and desired outcomes</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Map current-state vs. future-state process flows</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Define edge cases and exception handling criteria</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Iterative review cycles with prototype datasets</li>
+              </ul>
+
+              <div class="risk-grid">
+                <div class="risk-card risk">
+                  <p class="risk-card-label">⚠ Risk</p>
+                  <p class="risk-card-text">Requirements incomplete or change frequently due to evolving business understanding of AI capabilities.</p>
+                </div>
+                <div class="risk-card mitigation">
+                  <p class="risk-card-label">✓ Mitigation</p>
+                  <p class="risk-card-text">Iterative requirement reviews with business sign-off. Include prototype datasets to validate feasibility early.</p>
+                </div>
+                <div class="risk-card workaround">
+                  <p class="risk-card-label">⚡ Workaround</p>
+                  <p class="risk-card-text">Tight deadline: Deliver MVP requirements first, capture remaining requirements as backlog items for Sprint 2.</p>
+                </div>
+              </div>
+
+              <div class="scenarios-section">
+                <p class="scenario-title">▸ Real-World Scenarios</p>
+                <div class="scenario-tabs">
+                  <div class="scenario-tab active" onclick="showScenario('p2','s1',this)">Changing Requirements</div>
+                  <div class="scenario-tab" onclick="showScenario('p2','s2',this)">Data Unavailable</div>
+                  <div class="scenario-tab" onclick="showScenario('p2','s3',this)">KPI Disagreement</div>
+                </div>
+                <div class="scenario-content active" id="p2-s1">
+                  <h4>Scenario: Business changes requirements after sign-off</h4>
+                  <p>After functional spec is approved, a new regulatory requirement shifts the target outcome by 30%.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Freeze the current spec and open a formal change request</li>
+                    <li class="scenario-step">Impact-assess: which model features, data pipelines, and KPIs are affected?</li>
+                    <li class="scenario-step">Negotiate: defer non-critical changes to Phase 2 release</li>
+                    <li class="scenario-step">Update requirements doc with version history and stakeholder sign-off</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p2-s2">
+                  <h4>Scenario: Required training data doesn't exist yet</h4>
+                  <p>The AI model needs 18 months of historical transaction data, but the system only has 6 months available.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Flag data gap to Data Science team immediately — do not proceed silently</li>
+                    <li class="scenario-step">Evaluate synthetic data generation as a temporary training supplement</li>
+                    <li class="scenario-step">Adjust success metrics to reflect model limitations during initial deployment</li>
+                    <li class="scenario-step">Plan a model refresh once sufficient real data accumulates (6–12 months)</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p2-s3">
+                  <h4>Scenario: Two business units define success differently</h4>
+                  <p>Marketing wants precision, Operations wants recall. A single model cannot perfectly optimize both simultaneously.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Facilitate a joint workshop to explain the precision/recall tradeoff visually</li>
+                    <li class="scenario-step">Define a composite F1-score target as a shared KPI</li>
+                    <li class="scenario-step">Document each unit's secondary metric for monitoring purposes</li>
+                    <li class="scenario-step">Escalate to Program Director if no consensus is reached within 1 sprint</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PHASE 3 -->
+          <div class="phase-card" id="p3" onclick="toggleCard('p3')">
+            <div class="phase-card-header">
+              <div class="phase-icon" style="background:rgba(255,107,74,0.12);color:var(--phase3);">03</div>
+              <div>
+                <div class="phase-card-title">Solution Architecture & Design</div>
+                <div class="phase-card-owner">Owner: Solution Architects · PM</div>
+              </div>
+              <span class="expand-icon">▼</span>
+            </div>
+            <div class="phase-card-body">
+              <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.25rem;">Translate functional requirements into a technically feasible AI architecture. Design data pipelines, integration points, and a modular system that can scale with model iterations.</p>
+
+              <div class="io-grid">
+                <div class="io-box">
+                  <p class="io-box-title io-input">⬇ Inputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Functional requirements document</li>
+                    <li class="io-item">Available tech stack &amp; cloud platform</li>
+                    <li class="io-item">Data source map &amp; API inventory</li>
+                  </ul>
+                </div>
+                <div class="io-box">
+                  <p class="io-box-title io-output">⬆ Outputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">High-level architecture diagram</li>
+                    <li class="io-item">Integration &amp; API plan</li>
+                    <li class="io-item">Data pipeline design</li>
+                    <li class="io-item">PoC prototype decision</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p class="activities-title">Key Activities</p>
+              <ul class="activities-list">
+                <li class="activity-item"><span class="activity-bullet"></span>Design modular, decoupled architecture to allow model swaps</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Run early proof-of-concept (PoC) to validate feasibility</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Define data pipeline stages: ingestion → processing → serving</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Document integration points with existing enterprise systems</li>
+              </ul>
+
+              <div class="risk-grid">
+                <div class="risk-card risk">
+                  <p class="risk-card-label">⚠ Risk</p>
+                  <p class="risk-card-text">Architecture not feasible for AI scale. On-prem infrastructure unable to handle model training loads.</p>
+                </div>
+                <div class="risk-card mitigation">
+                  <p class="risk-card-label">✓ Mitigation</p>
+                  <p class="risk-card-text">Early PoC; modular architecture so components can be replaced. Cloud-burst capability for compute spikes.</p>
+                </div>
+                <div class="risk-card workaround">
+                  <p class="risk-card-label">⚡ Workaround</p>
+                  <p class="risk-card-text">Use cloud-based AI services (Azure ML, AWS SageMaker, GCP Vertex) for short-term deployment while on-prem is upgraded.</p>
+                </div>
+              </div>
+
+              <div class="scenarios-section">
+                <p class="scenario-title">▸ Real-World Scenarios</p>
+                <div class="scenario-tabs">
+                  <div class="scenario-tab active" onclick="showScenario('p3','s1',this)">Infra Limitation</div>
+                  <div class="scenario-tab" onclick="showScenario('p3','s2',this)">Legacy Integration</div>
+                  <div class="scenario-tab" onclick="showScenario('p3','s3',this)">PoC Failure</div>
+                </div>
+                <div class="scenario-content active" id="p3-s1">
+                  <h4>Scenario: On-prem servers can't handle model training load</h4>
+                  <p>During PoC, GPU utilization hits 100% for 14-hour training runs, blocking other workloads.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Immediately flag infrastructure bottleneck to Program Director</li>
+                    <li class="scenario-step">Evaluate cloud burst strategy: spot instances on AWS or Azure for training only</li>
+                    <li class="scenario-step">Serve inference on-prem using optimized/quantized model to reduce compute</li>
+                    <li class="scenario-step">Long-term: include GPU upgrade in next budget cycle</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p3-s2">
+                  <h4>Scenario: Critical data locked in a legacy system with no API</h4>
+                  <p>The most valuable training data is in a 15-year-old ERP system with no REST API and unreliable ODBC drivers.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Assess: scheduled batch export vs. real-time stream vs. full migration</li>
+                    <li class="scenario-step">Implement a CDC (Change Data Capture) layer using Debezium or similar</li>
+                    <li class="scenario-step">Build a data staging layer (data lake) as the integration intermediary</li>
+                    <li class="scenario-step">Flag ongoing maintenance cost of the integration to the PM and architect</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p3-s3">
+                  <h4>Scenario: PoC results are inconclusive — should we proceed?</h4>
+                  <p>The PoC model achieves 61% accuracy against a target of 80%. The team is split on whether to proceed.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Diagnose root cause: data quality, feature engineering, or model choice?</li>
+                    <li class="scenario-step">Run a second PoC iteration with improved features (2-week timebox)</li>
+                    <li class="scenario-step">If still under threshold: propose a simpler rule-based fallback system</li>
+                    <li class="scenario-step">Present go/no-go recommendation to Program Director with data to support decision</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PHASE 4 -->
+          <div class="phase-card" id="p4" onclick="toggleCard('p4')">
+            <div class="phase-card-header">
+              <div class="phase-icon" style="background:rgba(255,74,107,0.12);color:var(--phase4);">04</div>
+              <div>
+                <div class="phase-card-title">Risk & Governance Assessment</div>
+                <div class="phase-card-owner">Owner: Risk / Compliance · PM</div>
+              </div>
+              <span class="expand-icon">▼</span>
+            </div>
+            <div class="phase-card-body">
+              <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.25rem;">Ensure legal compliance, reduce model risks, and create audit trails before production. Address bias, privacy, and explainability requirements upfront — not after deployment.</p>
+
+              <div class="io-grid">
+                <div class="io-box">
+                  <p class="io-box-title io-input">⬇ Inputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Solution architecture design</li>
+                    <li class="io-item">Regulatory requirements (GDPR, etc.)</li>
+                    <li class="io-item">Business requirements &amp; KPIs</li>
+                    <li class="io-item">Data classification report</li>
+                  </ul>
+                </div>
+                <div class="io-box">
+                  <p class="io-box-title io-output">⬆ Outputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Risk register (scored &amp; prioritized)</li>
+                    <li class="io-item">AI governance plan</li>
+                    <li class="io-item">Data privacy impact assessment</li>
+                    <li class="io-item">Audit trail specification</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p class="activities-title">Key Activities</p>
+              <ul class="activities-list">
+                <li class="activity-item"><span class="activity-bullet"></span>Run bias detection analysis on training datasets</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Engage legal/compliance early — do not wait until deployment</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Define model explainability requirements (LIME, SHAP)</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Create audit trail and logging specification</li>
+              </ul>
+
+              <div class="risk-grid">
+                <div class="risk-card risk">
+                  <p class="risk-card-label">⚠ Risk</p>
+                  <p class="risk-card-text">Regulatory non-compliance (GDPR, CCPA). Biased outcomes in protected groups. Unexplainable model decisions.</p>
+                </div>
+                <div class="risk-card mitigation">
+                  <p class="risk-card-label">✓ Mitigation</p>
+                  <p class="risk-card-text">Bias detection tools (Fairlearn, IBM AIF360). Synthetic or anonymized training data. Early legal engagement.</p>
+                </div>
+                <div class="risk-card workaround">
+                  <p class="risk-card-label">⚡ Workaround</p>
+                  <p class="risk-card-text">Document known compliance gaps. Deploy with human-in-the-loop oversight as temporary measure until gaps resolved.</p>
+                </div>
+              </div>
+
+              <div class="scenarios-section">
+                <p class="scenario-title">▸ Real-World Scenarios</p>
+                <div class="scenario-tabs">
+                  <div class="scenario-tab active" onclick="showScenario('p4','s1',this)">GDPR Conflict</div>
+                  <div class="scenario-tab" onclick="showScenario('p4','s2',this)">Model Bias Found</div>
+                  <div class="scenario-tab" onclick="showScenario('p4','s3',this)">No Explainability</div>
+                </div>
+                <div class="scenario-content active" id="p4-s1">
+                  <h4>Scenario: Model uses PII data that violates GDPR Article 22</h4>
+                  <p>The model was designed to use customer demographic features for scoring, which triggers automated decision-making restrictions under GDPR.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Immediately halt model training on the affected features</li>
+                    <li class="scenario-step">Engage legal counsel to clarify permissible feature scope</li>
+                    <li class="scenario-step">Re-engineer features using anonymized proxies or aggregated signals</li>
+                    <li class="scenario-step">Add human review checkpoints to automated decisions as interim safeguard</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p4-s2">
+                  <h4>Scenario: Bias detected against a protected demographic</h4>
+                  <p>Fairlearn analysis shows the model has a 23% lower approval rate for a protected group compared to a reference group with similar credit profiles.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Halt production readiness until root cause is found</li>
+                    <li class="scenario-step">Audit training data for historical bias and class imbalance</li>
+                    <li class="scenario-step">Apply re-weighting or adversarial debiasing techniques</li>
+                    <li class="scenario-step">Re-validate with fairness metrics before re-submitting for governance approval</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p4-s3">
+                  <h4>Scenario: Business demands explainability but model is a black box</h4>
+                  <p>A neural network achieves target accuracy, but regulators require per-decision explanations. The model provides none.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Implement SHAP values for post-hoc explanations on each prediction</li>
+                    <li class="scenario-step">Evaluate simpler surrogate model (decision tree) as a parallel explainability layer</li>
+                    <li class="scenario-step">Present top-3 feature contributions per decision in the UI</li>
+                    <li class="scenario-step">Document explainability approach in the governance plan for regulator review</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PHASE 5 -->
+          <div class="phase-card" id="p5" onclick="toggleCard('p5')">
+            <div class="phase-card-header">
+              <div class="phase-icon" style="background:rgba(244,200,66,0.12);color:var(--phase5);">05</div>
+              <div>
+                <div class="phase-card-title">Data Science & Model Development</div>
+                <div class="phase-card-owner">Owner: Data Scientists · PM</div>
+              </div>
+              <span class="expand-icon">▼</span>
+            </div>
+            <div class="phase-card-body">
+              <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.25rem;">Build, test, and validate AI models iteratively. This phase loops — experiments run until KPIs are met. Maintain parallel experiments and document all assumptions.</p>
+
+              <div class="callout" style="margin-bottom:1rem;">
+                <strong>🔁 ITERATION NOTE</strong> &nbsp;This phase is non-linear. Multiple experiments run simultaneously. PM tracks each experiment branch and gates production based on KPI thresholds, not time alone.
+              </div>
+
+              <div class="io-grid">
+                <div class="io-box">
+                  <p class="io-box-title io-input">⬇ Inputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Cleaned &amp; labeled datasets</li>
+                    <li class="io-item">Feature engineering specifications</li>
+                    <li class="io-item">Business KPIs &amp; success thresholds</li>
+                    <li class="io-item">Governance constraints (from Phase 4)</li>
+                  </ul>
+                </div>
+                <div class="io-box">
+                  <p class="io-box-title io-output">⬆ Outputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Trained model artifact(s)</li>
+                    <li class="io-item">Evaluation metrics &amp; test reports</li>
+                    <li class="io-item">Experiment logs (MLflow, W&amp;B)</li>
+                    <li class="io-item">Champion model selection rationale</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p class="activities-title">Key Activities</p>
+              <ul class="activities-list">
+                <li class="activity-item"><span class="activity-bullet"></span>Maintain multiple model experiments in parallel (champion-challenger)</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Feature engineering iterations based on performance analysis</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Cross-validation and holdout set testing</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Document all assumptions, hyperparameters, and experiment decisions</li>
+              </ul>
+
+              <div class="risk-grid">
+                <div class="risk-card risk">
+                  <p class="risk-card-label">⚠ Risk</p>
+                  <p class="risk-card-text">Poor model performance. Insufficient training data. High variance / overfitting. Experiment results not reproducible.</p>
+                </div>
+                <div class="risk-card mitigation">
+                  <p class="risk-card-label">✓ Mitigation</p>
+                  <p class="risk-card-text">Champion-challenger experiments. Simpler fallback models. Feature engineering iterations. Reproducible experiment tracking with MLflow.</p>
+                </div>
+                <div class="risk-card workaround">
+                  <p class="risk-card-label">⚡ Workaround</p>
+                  <p class="risk-card-text">Deploy pre-trained foundation model or rules-based interim system to meet deadline. Schedule model improvement for next sprint.</p>
+                </div>
+              </div>
+
+              <div class="scenarios-section">
+                <p class="scenario-title">▸ Real-World Scenarios</p>
+                <div class="scenario-tabs">
+                  <div class="scenario-tab active" onclick="showScenario('p5','s1',this)">Model Fails KPI</div>
+                  <div class="scenario-tab" onclick="showScenario('p5','s2',this)">Data Quality</div>
+                  <div class="scenario-tab" onclick="showScenario('p5','s3',this)">Deadline Pressure</div>
+                </div>
+                <div class="scenario-content active" id="p5-s1">
+                  <h4>Scenario: After 6 iterations, model still misses KPI by 12%</h4>
+                  <p>The target F1 score is 0.85. After 6 experiment cycles, the best model achieves 0.75. Timeline is at risk.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Conduct a root cause analysis: data quality, feature set, or model architecture?</li>
+                    <li class="scenario-step">Bring in an external ML consultant for a fresh perspective (2-day timebox)</li>
+                    <li class="scenario-step">Negotiate with business: can the KPI threshold be adjusted for Phase 1?</li>
+                    <li class="scenario-step">If KPI cannot be met: deploy a rules-based fallback and schedule model V2</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p5-s2">
+                  <h4>Scenario: Training data has significant label noise</h4>
+                  <p>Data audit reveals ~18% of labeled samples are incorrectly classified, causing the model to learn incorrect patterns.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Halt model training — garbage in, garbage out. Alert PM immediately.</li>
+                    <li class="scenario-step">Run label quality tools (Cleanlab, confidence learning) to identify noisy samples</li>
+                    <li class="scenario-step">Engage subject matter experts for re-labeling the suspect subset</li>
+                    <li class="scenario-step">Retrain from clean dataset and update timeline estimates accordingly</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p5-s3">
+                  <h4>Scenario: Business demands deployment in 3 weeks, model needs 3 months</h4>
+                  <p>An executive deadline cannot be moved. The current model development timeline exceeds it by 10 weeks.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Deploy a pre-trained model (GPT, BERT, XGBoost base) as a fast MVP</li>
+                    <li class="scenario-step">Fine-tune the pre-trained model on available data in a 2-week sprint</li>
+                    <li class="scenario-step">Set clear expectations: MVP performance vs. target KPI — communicate gap in writing</li>
+                    <li class="scenario-step">Full custom model development continues in parallel for Q2 release</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PHASE 6 -->
+          <div class="phase-card" id="p6" onclick="toggleCard('p6')">
+            <div class="phase-card-header">
+              <div class="phase-icon" style="background:rgba(74,159,255,0.12);color:var(--phase6);">06</div>
+              <div>
+                <div class="phase-card-title">Deployment / MLOps</div>
+                <div class="phase-card-owner">Owner: Solution Engineering · DevOps</div>
+              </div>
+              <span class="expand-icon">▼</span>
+            </div>
+            <div class="phase-card-body">
+              <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.25rem;">Integrate validated models into production with automated pipelines, rollback plans, and canary releases. Zero-downtime deployment is the goal — not just getting the model live.</p>
+
+              <div class="io-grid">
+                <div class="io-box">
+                  <p class="io-box-title io-input">⬇ Inputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Validated champion model artifact</li>
+                    <li class="io-item">Integration plan from Phase 3</li>
+                    <li class="io-item">Governance approval (Phase 4)</li>
+                    <li class="io-item">Performance benchmarks</li>
+                  </ul>
+                </div>
+                <div class="io-box">
+                  <p class="io-box-title io-output">⬆ Outputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Production-ready AI system</li>
+                    <li class="io-item">CI/CD pipelines for model updates</li>
+                    <li class="io-item">Automated testing suite</li>
+                    <li class="io-item">Rollback &amp; incident playbooks</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p class="activities-title">Key Activities</p>
+              <ul class="activities-list">
+                <li class="activity-item"><span class="activity-bullet"></span>Canary release: route 5% of traffic to new model before full rollout</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Shadow mode: run new model alongside existing system without acting on predictions</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Automated regression testing on model outputs</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Document rollback trigger conditions and procedures</li>
+              </ul>
+
+              <div class="risk-grid">
+                <div class="risk-card risk">
+                  <p class="risk-card-label">⚠ Risk</p>
+                  <p class="risk-card-text">Deployment failures, integration breaks, scaling issues under production load, model serving latency spikes.</p>
+                </div>
+                <div class="risk-card mitigation">
+                  <p class="risk-card-label">✓ Mitigation</p>
+                  <p class="risk-card-text">Canary releases. Monitoring dashboards from Day 1. Automated rollback triggered by latency or error thresholds.</p>
+                </div>
+                <div class="risk-card workaround">
+                  <p class="risk-card-label">⚡ Workaround</p>
+                  <p class="risk-card-text">Staged deployment or shadow mode operation until production issues are resolved. Previous version remains active.</p>
+                </div>
+              </div>
+
+              <div class="scenarios-section">
+                <p class="scenario-title">▸ Real-World Scenarios</p>
+                <div class="scenario-tabs">
+                  <div class="scenario-tab active" onclick="showScenario('p6','s1',this)">Deployment Failure</div>
+                  <div class="scenario-tab" onclick="showScenario('p6','s2',this)">Latency Spike</div>
+                  <div class="scenario-tab" onclick="showScenario('p6','s3',this)">Rollback Trigger</div>
+                </div>
+                <div class="scenario-content active" id="p6-s1">
+                  <h4>Scenario: Container image fails to start in production</h4>
+                  <p>During canary deployment, the model container crashes due to a missing environment variable in production config.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Auto-rollback fires immediately — canary traffic reverts to stable model</li>
+                    <li class="scenario-step">DevOps investigates config diff between staging and production environments</li>
+                    <li class="scenario-step">Add environment variable validation to CI/CD pre-deployment checklist</li>
+                    <li class="scenario-step">Re-deploy with fixed config after passing staging smoke tests</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p6-s2">
+                  <h4>Scenario: Model inference latency triples after load increase</h4>
+                  <p>At 10x expected traffic, model inference p99 latency hits 4.2 seconds vs. 400ms SLA target.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Immediate: enable model response caching for high-frequency identical inputs</li>
+                    <li class="scenario-step">Quantize model (INT8) to reduce compute requirement — often 2-4x speed improvement</li>
+                    <li class="scenario-step">Scale horizontal replicas via Kubernetes HPA based on request queue depth</li>
+                    <li class="scenario-step">Long-term: profile bottleneck (GPU, network, serialization) and optimize</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p6-s3">
+                  <h4>Scenario: When should PM trigger a rollback?</h4>
+                  <p>PM receives alerts but is unsure whether to rollback or wait. Clear criteria prevent panic decisions.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Pre-define rollback triggers: error rate &gt;2%, latency p99 &gt;1s, accuracy drop &gt;5%</li>
+                    <li class="scenario-step">Rollback decision is automatic if alerts breach thresholds for more than 5 minutes</li>
+                    <li class="scenario-step">PM notifies business stakeholders within 15 minutes of rollback event</li>
+                    <li class="scenario-step">Post-incident review within 48 hours — document root cause and prevention steps</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PHASE 7 -->
+          <div class="phase-card" id="p7" onclick="toggleCard('p7')">
+            <div class="phase-card-header">
+              <div class="phase-icon" style="background:rgba(74,255,184,0.12);color:var(--phase7);">07</div>
+              <div>
+                <div class="phase-card-title">Monitoring & Continuous Improvement</div>
+                <div class="phase-card-owner">Owner: MLOps · Monitoring Team</div>
+              </div>
+              <span class="expand-icon">▼</span>
+            </div>
+            <div class="phase-card-body">
+              <p style="font-size:0.88rem;color:var(--text-dim);line-height:1.7;margin-bottom:1.25rem;">Ensure the AI model stays relevant and effective as real-world data evolves. Monitor for concept drift, automate retraining, and maintain human override capabilities.</p>
+
+              <div class="io-grid">
+                <div class="io-box">
+                  <p class="io-box-title io-input">⬇ Inputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Production inference logs</li>
+                    <li class="io-item">User feedback &amp; outcome signals</li>
+                    <li class="io-item">KPI dashboards &amp; alerts</li>
+                    <li class="io-item">New incoming training data</li>
+                  </ul>
+                </div>
+                <div class="io-box">
+                  <p class="io-box-title io-output">⬆ Outputs</p>
+                  <ul class="io-items">
+                    <li class="io-item">Monitoring dashboards &amp; alerts</li>
+                    <li class="io-item">Scheduled retraining pipeline</li>
+                    <li class="io-item">Model performance reports</li>
+                    <li class="io-item">Improvement backlog</li>
+                  </ul>
+                </div>
+              </div>
+
+              <p class="activities-title">Key Activities</p>
+              <ul class="activities-list">
+                <li class="activity-item"><span class="activity-bullet"></span>Continuous drift detection on input data distribution vs. training distribution</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Automated retraining pipeline triggered by performance thresholds</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Monthly performance review with business stakeholders</li>
+                <li class="activity-item"><span class="activity-bullet"></span>Maintain manual override capability for high-risk decisions</li>
+              </ul>
+
+              <div class="risk-grid">
+                <div class="risk-card risk">
+                  <p class="risk-card-label">⚠ Risk</p>
+                  <p class="risk-card-text">Concept drift — real-world data shifts away from training distribution. Model degradation undetected until business impact is felt.</p>
+                </div>
+                <div class="risk-card mitigation">
+                  <p class="risk-card-label">✓ Mitigation</p>
+                  <p class="risk-card-text">Scheduled retraining (weekly/monthly). PSI/KS-test drift alerts. Performance threshold alerts with escalation workflow.</p>
+                </div>
+                <div class="risk-card workaround">
+                  <p class="risk-card-label">⚡ Workaround</p>
+                  <p class="risk-card-text">Temporary fallback to rules-based system while retraining completes. Human-in-the-loop review for low-confidence predictions.</p>
+                </div>
+              </div>
+
+              <div class="scenarios-section">
+                <p class="scenario-title">▸ Real-World Scenarios</p>
+                <div class="scenario-tabs">
+                  <div class="scenario-tab active" onclick="showScenario('p7','s1',this)">Concept Drift</div>
+                  <div class="scenario-tab" onclick="showScenario('p7','s2',this)">Silent Failure</div>
+                  <div class="scenario-tab" onclick="showScenario('p7','s3',this)">Retraining Cost</div>
+                </div>
+                <div class="scenario-content active" id="p7-s1">
+                  <h4>Scenario: Model degrades after a market shift</h4>
+                  <p>6 months post-deployment, a regulatory change alters customer behavior patterns. Model accuracy drops from 83% to 67% over 3 weeks.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">PSI drift alert fires at week 2 — PM and Data Science notified automatically</li>
+                    <li class="scenario-step">Activate human-in-the-loop review for predictions with confidence &lt; 70%</li>
+                    <li class="scenario-step">Trigger emergency retraining pipeline with last 3 months of post-change data</li>
+                    <li class="scenario-step">Validate retrained model in staging before promoting; communicate timeline to business</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p7-s2">
+                  <h4>Scenario: Model appears to be working but outcomes are wrong</h4>
+                  <p>Accuracy metrics show 81% but business reports a 35% increase in customer complaints linked to AI decisions.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Recognize that accuracy alone is insufficient — add business outcome metrics to dashboard</li>
+                    <li class="scenario-step">Investigate: are low-confidence correct predictions causing downstream issues?</li>
+                    <li class="scenario-step">Add calibration metrics and business outcome KPIs to the monitoring suite</li>
+                    <li class="scenario-step">Establish feedback loop: capture complaint outcomes as ground truth labels for retraining</li>
+                  </ol>
+                </div>
+                <div class="scenario-content" id="p7-s3">
+                  <h4>Scenario: Retraining pipeline costs escalate unexpectedly</h4>
+                  <p>Monthly retraining costs reach $40K due to full dataset retraining each cycle. Budget only supports $8K/month.</p>
+                  <ol class="scenario-steps">
+                    <li class="scenario-step">Switch to incremental/online learning — train only on new data deltas</li>
+                    <li class="scenario-step">Implement warm-start retraining from the previous model checkpoint</li>
+                    <li class="scenario-step">Adjust retraining frequency based on drift severity: monthly by default, weekly only when drift detected</li>
+                    <li class="scenario-step">Evaluate lighter model architecture that achieves acceptable accuracy at lower cost</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /phase-grid -->
+      </section>
+
+      <!-- ── LIFECYCLE SECTION ── -->
+      <section class="content-section" id="section-lifecycle">
+        <h2 class="section-heading">Lifecycle Flow</h2>
+        <p class="section-sub">End-to-end program flow across all 7 phases. Click any node to navigate to the corresponding phase detail. Note the iterative loop in Phase 5.</p>
+
+        <div class="callout">
+          <strong>🔑 PM TIP</strong> &nbsp;Define soft start dates between phases — not hard gates. Use dependency flags in your PM tool so teams can begin preparation work in parallel rather than waiting in sequence.
+        </div>
+
+        <div class="flow-track">
+          <div class="flow-node" onclick="showSection('phases'); setTimeout(()=>expandCard('p1'),100)">
+            <div class="flow-marker" style="border-color:var(--phase1);color:var(--phase1);">01</div>
+            <div class="flow-content">
+              <p class="flow-content-title">Program &amp; Project Initiation</p>
+              <p class="flow-content-desc">Secure executive alignment, define charter, assign teams. Gate: Signed charter + resource plan.</p>
+              <div class="flow-tags">
+                <span class="flow-tag">Program Manager</span><span class="flow-tag">Charter</span><span class="flow-tag">Roadmap</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-node" onclick="showSection('phases'); setTimeout(()=>expandCard('p2'),100)">
+            <div class="flow-marker" style="border-color:var(--phase2);color:var(--phase2);">02</div>
+            <div class="flow-content">
+              <p class="flow-content-title">Business Requirements &amp; Functional Analysis</p>
+              <p class="flow-content-desc">Define success metrics and functional requirements. Gate: Business sign-off on requirements doc.</p>
+              <div class="flow-tags">
+                <span class="flow-tag">Functional Consultants</span><span class="flow-tag">KPIs</span><span class="flow-tag">Iterative</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-node" onclick="showSection('phases'); setTimeout(()=>expandCard('p3'),100)">
+            <div class="flow-marker" style="border-color:var(--phase3);color:var(--phase3);">03</div>
+            <div class="flow-content">
+              <p class="flow-content-title">Solution Architecture &amp; Design</p>
+              <p class="flow-content-desc">Design data pipelines, integration plan, and system architecture. Gate: PoC validation.</p>
+              <div class="flow-tags">
+                <span class="flow-tag">Solution Architects</span><span class="flow-tag">PoC</span><span class="flow-tag">Data Pipelines</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-node" onclick="showSection('phases'); setTimeout(()=>expandCard('p4'),100)">
+            <div class="flow-marker" style="border-color:var(--phase4);color:var(--phase4);">04</div>
+            <div class="flow-content">
+              <p class="flow-content-title">Risk &amp; Governance Assessment</p>
+              <p class="flow-content-desc">Compliance, bias detection, audit trail design. Gate: Governance plan approved by legal.</p>
+              <div class="flow-tags">
+                <span class="flow-tag">Risk / Compliance</span><span class="flow-tag">GDPR</span><span class="flow-tag">Bias</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-node" onclick="showSection('phases'); setTimeout(()=>expandCard('p5'),100)">
+            <div class="flow-marker" style="border-color:var(--phase5);color:var(--phase5);">05</div>
+            <div class="flow-content">
+              <p class="flow-content-title" style="color:var(--phase5);">⟳ Data Science &amp; Model Development (Iterative)</p>
+              <p class="flow-content-desc">Champion-challenger experiments until KPIs met. Loops back on failure. Gate: KPI threshold achieved on holdout set.</p>
+              <div class="flow-tags">
+                <span class="flow-tag">Data Scientists</span><span class="flow-tag">MLflow</span><span class="flow-tag">Experiments</span><span class="flow-tag">Champion Model</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-node" onclick="showSection('phases'); setTimeout(()=>expandCard('p6'),100)">
+            <div class="flow-marker" style="border-color:var(--phase6);color:var(--phase6);">06</div>
+            <div class="flow-content">
+              <p class="flow-content-title">Deployment / MLOps</p>
+              <p class="flow-content-desc">Canary release → staged rollout → full production. Gate: Zero critical alerts in canary phase.</p>
+              <div class="flow-tags">
+                <span class="flow-tag">DevOps</span><span class="flow-tag">Canary</span><span class="flow-tag">CI/CD</span><span class="flow-tag">Rollback</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flow-node" onclick="showSection('phases'); setTimeout(()=>expandCard('p7'),100)">
+            <div class="flow-marker" style="border-color:var(--phase7);color:var(--phase7);">07</div>
+            <div class="flow-content">
+              <p class="flow-content-title">Monitoring &amp; Continuous Improvement</p>
+              <p class="flow-content-desc">Perpetual loop: monitor → detect drift → retrain → re-deploy. No end date.</p>
+              <div class="flow-tags">
+                <span class="flow-tag">MLOps</span><span class="flow-tag">Drift Detection</span><span class="flow-tag">Auto-Retrain</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── RACI SECTION ── -->
+      <section class="content-section" id="section-raci">
+        <h2 class="section-heading">RACI Governance Matrix</h2>
+        <p class="section-sub">Who is Responsible, Accountable, Consulted, and Informed at each phase. PMs are Accountable across all phases — this is the single thread of ownership.</p>
+
+        <div class="callout">
+          <strong>R = Responsible</strong> &nbsp;·&nbsp; <strong>A = Accountable</strong> &nbsp;·&nbsp; <strong>C = Consulted</strong> &nbsp;·&nbsp; <strong>I = Informed</strong><br>
+          <span style="font-size:0.8rem;">Note: Program Manager appears as Accountable in every phase — the PM is the connective tissue of the program.</span>
+        </div>
+
+        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:8px;margin-bottom:2rem;">
+          <table class="raci-table">
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Program Manager</th>
+                <th>Business / Exec</th>
+                <th>Data Science</th>
+                <th>Solution Architects</th>
+                <th>DevOps / MLOps</th>
+                <th>Risk / Compliance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="phase-chip"><span class="phase-chip-dot" style="background:var(--phase1)"></span>① Initiation</span></td>
+                <td><span class="raci-badge raci-R">R</span></td>
+                <td><span class="raci-badge raci-C">C</span> <span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+              </tr>
+              <tr>
+                <td><span class="phase-chip"><span class="phase-chip-dot" style="background:var(--phase2)"></span>② Requirements</span></td>
+                <td><span class="raci-badge raci-A">A</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+              </tr>
+              <tr>
+                <td><span class="phase-chip"><span class="phase-chip-dot" style="background:var(--phase3)"></span>③ Architecture</span></td>
+                <td><span class="raci-badge raci-A">A</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-R">R</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+              </tr>
+              <tr>
+                <td><span class="phase-chip"><span class="phase-chip-dot" style="background:var(--phase4)"></span>④ Risk &amp; Gov.</span></td>
+                <td><span class="raci-badge raci-A">A</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-R">R</span></td>
+              </tr>
+              <tr>
+                <td><span class="phase-chip"><span class="phase-chip-dot" style="background:var(--phase5)"></span>⑤ Model Dev.</span></td>
+                <td><span class="raci-badge raci-A">A</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-R">R</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+              </tr>
+              <tr>
+                <td><span class="phase-chip"><span class="phase-chip-dot" style="background:var(--phase6)"></span>⑥ Deployment</span></td>
+                <td><span class="raci-badge raci-A">A</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-R">R</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+              </tr>
+              <tr>
+                <td><span class="phase-chip"><span class="phase-chip-dot" style="background:var(--phase7)"></span>⑦ Monitoring</span></td>
+                <td><span class="raci-badge raci-A">A</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-C">C</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+                <td><span class="raci-badge raci-R">R</span></td>
+                <td><span class="raci-badge raci-I">I</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:1rem;">Role Definitions</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem;">
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Program Manager</p>
+            <p style="font-size:0.83rem;color:var(--text-dim);line-height:1.6;">Accountable across all phases. Owns timeline, cross-team coordination, escalation, and stakeholder communication. Single thread of program ownership.</p>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem;">
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Data Science</p>
+            <p style="font-size:0.83rem;color:var(--text-dim);line-height:1.6;">Owns model experiments, feature engineering, and evaluation. Consulted on requirements and architecture. Reports to PM on experiment status weekly.</p>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem;">
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--accent2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Solution Architects</p>
+            <p style="font-size:0.83rem;color:var(--text-dim);line-height:1.6;">Responsible for Phase 3. Consulted on Phases 4 and 6. Ensures the architecture can support model updates without re-engineering the entire system.</p>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem;">
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--danger);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;">Risk / Compliance</p>
+            <p style="font-size:0.83rem;color:var(--text-dim);line-height:1.6;">Responsible for Phase 4. Must be engaged before Phase 3 completes to prevent governance blockers at deployment. Signs off on production readiness.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── RISK REGISTER SECTION ── -->
+      <section class="content-section" id="section-risks">
+        <h2 class="section-heading">Risk Register</h2>
+        <p class="section-sub">Consolidated risk inventory across all 7 phases. Review at every weekly PM checkpoint. Escalate HIGH risks to Program Director within 24 hours of identification.</p>
+
+        <div class="callout">
+          <strong>⚠ ESCALATION RULE</strong> &nbsp;Any HIGH risk that has no mitigation owner assigned within 48 hours auto-escalates to Program Director. Document all risks in your PM tool (Jira Epic / Asana portfolio risk field).
+        </div>
+
+        <div class="risk-register">
+          <div style="display:grid;grid-template-columns:120px 1fr 80px 1fr;gap:1rem;padding:0.5rem 1.25rem;font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">
+            <span>Phase</span><span>Risk Description</span><span>Level</span><span>Mitigation</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase1);">① Initiation</span>
+            <span class="risk-desc">Executive misalignment causes scope changes after charter sign-off</span>
+            <span class="risk-level risk-high">High</span>
+            <span class="risk-mit">Weekly exec checkpoints. Signed charter with change control process.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase1);">① Initiation</span>
+            <span class="risk-desc">Key team members unavailable at project start</span>
+            <span class="risk-level risk-medium">Medium</span>
+            <span class="risk-mit">Pre-identify backups for all critical roles. Contractor bench available.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase2);">② Requirements</span>
+            <span class="risk-desc">Requirements change after sign-off, forcing architecture rework</span>
+            <span class="risk-level risk-high">High</span>
+            <span class="risk-mit">Iterative sprints. MVP-first approach. Formal change control required.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase2);">② Requirements</span>
+            <span class="risk-desc">Required training data is unavailable or insufficient</span>
+            <span class="risk-level risk-high">High</span>
+            <span class="risk-mit">Synthetic data generation. Data acquisition plan with 60-day lead time.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase3);">③ Architecture</span>
+            <span class="risk-desc">On-prem infrastructure cannot handle model training workloads</span>
+            <span class="risk-level risk-medium">Medium</span>
+            <span class="risk-mit">Cloud burst compute (spot instances). Modular architecture for cloud migration.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase3);">③ Architecture</span>
+            <span class="risk-desc">Legacy system integration blocks data pipeline</span>
+            <span class="risk-level risk-high">High</span>
+            <span class="risk-mit">CDC layer (Debezium). Data staging lake as integration buffer.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase4);">④ Governance</span>
+            <span class="risk-desc">Model uses PII triggering GDPR Article 22 violations</span>
+            <span class="risk-level risk-high">High</span>
+            <span class="risk-mit">Feature engineering to anonymize inputs. Legal review gate before training.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase4);">④ Governance</span>
+            <span class="risk-desc">Bias detected in model outputs against protected groups</span>
+            <span class="risk-level risk-high">High</span>
+            <span class="risk-mit">Fairlearn / AIF360 bias testing. Re-weighting. Human-in-the-loop for edge cases.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase5);">⑤ Model Dev.</span>
+            <span class="risk-desc">Model fails to meet KPI threshold after multiple experiment cycles</span>
+            <span class="risk-level risk-high">High</span>
+            <span class="risk-mit">Pre-trained model fallback. Negotiate adjusted KPI for Phase 1 with business.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase5);">⑤ Model Dev.</span>
+            <span class="risk-desc">Training data label noise causes model to learn incorrect patterns</span>
+            <span class="risk-level risk-medium">Medium</span>
+            <span class="risk-mit">Cleanlab quality audit. SME re-labeling of suspect dataset subset.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase5);">⑤ Model Dev.</span>
+            <span class="risk-desc">Experiment results not reproducible across environments</span>
+            <span class="risk-level risk-low">Low</span>
+            <span class="risk-mit">MLflow / Weights &amp; Biases for full experiment tracking. Seed pinning.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase6);">⑥ Deployment</span>
+            <span class="risk-desc">Production deployment fails, causing service disruption</span>
+            <span class="risk-level risk-high">High</span>
+            <span class="risk-mit">Canary release (5% traffic). Auto-rollback on error rate &gt;2%. Staged deployment.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase6);">⑥ Deployment</span>
+            <span class="risk-desc">Model inference latency exceeds SLA under production load</span>
+            <span class="risk-level risk-medium">Medium</span>
+            <span class="risk-mit">Model quantization (INT8). Horizontal auto-scaling. Response caching.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase7);">⑦ Monitoring</span>
+            <span class="risk-desc">Concept drift degrades model accuracy without detection</span>
+            <span class="risk-level risk-high">High</span>
+            <span class="risk-mit">PSI / KS drift alerts. Automated retraining trigger. Monthly business review.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase7);">⑦ Monitoring</span>
+            <span class="risk-desc">Retraining pipeline costs exceed budget allocation</span>
+            <span class="risk-level risk-medium">Medium</span>
+            <span class="risk-mit">Incremental learning. Warm-start retraining. Drift-triggered (not scheduled) retraining.</span>
+          </div>
+
+          <div class="risk-row">
+            <span class="risk-phase-label" style="color:var(--phase7);">⑦ Monitoring</span>
+            <span class="risk-desc">Data pipeline failure causes stale model to serve outdated predictions</span>
+            <span class="risk-level risk-medium">Medium</span>
+            <span class="risk-mit">Pipeline health alerts. Stale data thresholds. Fallback to rules-based system.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── CHECKLIST SECTION ── -->
+      <section class="content-section" id="section-checklist">
+        <h2 class="section-heading">PM Checklist</h2>
+        <p class="section-sub">Interactive phase-gate checklist for Program Managers. Check items off as you complete them. Progress auto-saves during your session.</p>
+
+        <div class="progress-section">
+          <span class="progress-label">Overall Progress</span>
+          <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+          <span class="progress-pct" id="progress-pct">0%</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+
+          <div>
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--phase1);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">Phase 1 — Initiation</p>
+            <div class="checklist">
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Project charter drafted and circulated</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Executive sponsor identified and confirmed</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Cross-functional team leads assigned</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>High-level roadmap reviewed and approved</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Weekly exec checkpoint cadence established</span></div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--phase2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">Phase 2 — Requirements</p>
+            <div class="checklist">
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Stakeholder interviews completed</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Functional requirements document signed off</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>KPIs and success metrics defined</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Data availability assessed and documented</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>MVP feature set agreed upon</span></div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--phase3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">Phase 3 — Architecture</p>
+            <div class="checklist">
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Architecture diagram reviewed by all leads</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>PoC completed with go/no-go decision logged</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Data pipeline design approved</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Integration points documented and tested</span></div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--phase4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">Phase 4 — Governance</p>
+            <div class="checklist">
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Risk register completed and scored</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Legal / compliance reviewed and signed off</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Bias testing run on training datasets</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Data privacy impact assessment complete</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Audit trail specification documented</span></div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--phase5);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">Phase 5 — Model Development</p>
+            <div class="checklist">
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>MLflow / experiment tracking configured</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Champion model selected with rationale logged</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>KPI threshold achieved on holdout test set</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>All experiment assumptions documented</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Fallback model identified if primary fails</span></div>
+            </div>
+          </div>
+
+          <div>
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--phase6);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">Phase 6 — Deployment</p>
+            <div class="checklist">
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>CI/CD pipeline configured and tested</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Canary release executed with no critical alerts</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Rollback triggers and procedures documented</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Monitoring dashboards live before full rollout</span></div>
+            </div>
+          </div>
+
+          <div style="grid-column:1/-1;">
+            <p style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--phase7);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">Phase 7 — Monitoring</p>
+            <div class="checklist" style="display:grid;grid-template-columns:1fr 1fr;gap:0 1.5rem;">
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Drift detection alerts configured (PSI / KS)</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Retraining pipeline scheduled and tested</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Business outcome metrics added to dashboard</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Monthly business review cadence scheduled</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Manual override process documented</span></div>
+              <div class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Post-deployment improvement backlog created</span></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div><!-- /app-layout -->
+</div>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById('section-' + id);
+    if (target) target.classList.add('active');
+  }
+
+  function setActiveNav(el) {
+    document.querySelectorAll('.phase-nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function toggleCard(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('expanded');
+  }
+
+  function expandCard(id) {
+    const card = document.getElementById(id);
+    if (card && !card.classList.contains('expanded')) {
+      card.classList.add('expanded');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function showScenario(phase, scenario, btn) {
+    // hide all scenario contents for this phase
+    document.querySelectorAll(`[id^="${phase}-"]`).forEach(el => el.classList.remove('active'));
+    document.getElementById(`${phase}-${scenario}`).classList.add('active');
+    // update tab styles
+    btn.closest('.scenario-tabs').querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = document.querySelectorAll('.check-item').length;
+    const done = document.querySelectorAll('.check-item.checked').length;
+    const pct = Math.round((done / total) * 100);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = pct + '%';
+  }
+
+  // Animate progress bar on section load
+  document.querySelector('.phase-nav-item').addEventListener('click', function() {
+    setTimeout(updateProgress, 100);
+  });
+
+  // Init
+  document.querySelectorAll('.phase-nav-item').forEach(item => {
+    item.addEventListener('click', function() { setActiveNav(this); });
+  });
+</script>
+
+</body>
+</html>
